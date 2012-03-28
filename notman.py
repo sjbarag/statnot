@@ -286,7 +286,7 @@ class NotificationFetcher(dbus.service.Object):
         add_notification( [app_name.strip(), notification_id,
                           summary.strip(), body.strip(),
                           int(expire_timeout) / 1000.0] )
-        ibd.make_notif( summary.strip(), body.strip(), "1:02:34" )
+        ibd.make_notif( summary.strip(), body.strip(), time.strftime("%d %b %Y %H:%M:%S", time.localtime()) )
         print "made notif"
         return notification_id
 
