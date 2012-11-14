@@ -39,6 +39,7 @@ import thread
 import time
 from htmlentitydefs import name2codepoint as n2cp
 import re
+import glib
 
 # ===== CONFIGURATION DEFAULTS =====
 #
@@ -81,11 +82,11 @@ class InfoBarDemo(gtk.Window):
 		self.make_notif("Lorem Ipsum", "Dolor sit amet.", "12:34:54", "gtk.png.small")
 		self.make_notif("URGENT", "This is important!", "12:34:50", "gtk.png.small", "critical")
 		self.make_notif("No Image", "Image-less notifications are supported", "12:30:14")
-		self.make_notif("Multi-Line", "Multi-line bodies are supported\n\nSee?", "12:28:07", "gtk.png.small")
+		self.make_notif("Multi-Line", "Multi-line bodies are supported\n\nSee?", "12:28:07", "gtk.png.small", timeout=5000)
 
 		self.show_all()
 
-	def make_notif(self, title, body, time, icon=None, urgency="Normal", first=False):
+	def make_notif(self, title, body, time, icon=None, urgency="Normal", first=False, timeout=None):
 		#if not first:
 		#	hsep = gtk.HSeparator()
 		#	self.vb.pack_start(hsep, False, False)
@@ -172,6 +173,15 @@ class InfoBarDemo(gtk.Window):
 		self.vb.pack_start(stroke, False, False)
 		#self.vb.pack_start(bar, False, False)
 		self.vb.show_all()
+
+		if timeout:
+			print "got notification with timeout", timeout
+			glib.timeout_add(int(timeout), self._invalidate_notification, stroke)
+
+	def _invalidate_notification(self, bar):
+		eventbox = bar.get_child()
+		eventbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.Color("#cccccc"))
+
 
 	def _on_close_clicked(self, button, bar):
 		bar.destroy()
